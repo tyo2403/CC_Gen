@@ -4,10 +4,10 @@ class CCGenerator {
         this.setupEventListeners();
         this.populateYearOptions();
         this.cardTypes = {
-            visa: { prefix: ['4'], length: [13, 16, 19] },
-            mastercard: { prefix: ['51', '52', '53', '54', '55', '2221', '2222', '2223', '2224', '2225', '2226', '2227', '2228', '2229', '223', '224', '225', '226', '227', '228', '229', '23', '24', '25', '26', '270', '271', '2720'], length: [16] },
+            visa: { prefix: ['4'], length: [16] },
+            mastercard: { prefix: ['5'], length: [16] },
             amex: { prefix: ['34', '37'], length: [15] },
-            discover: { prefix: ['6011', '622126', '622127', '622128', '622129', '62213', '62214', '62215', '62216', '62217', '62218', '62219', '6222', '6223', '6224', '6225', '6226', '6227', '6228', '644', '645', '646', '647', '648', '649', '65'], length: [16] }
+            discover: { prefix: ['6'], length: [16] }
         };
         this.names = [
             'John Smith', 'Jane Doe', 'Michael Johnson', 'Sarah Williams', 'David Brown',
@@ -184,7 +184,7 @@ class CCGenerator {
 
     generateSingleCard(bin, cardType) {
         let selectedType = cardType;
-        let cardNumber = bin;
+        let cardNumber = '';
 
         if (cardType === 'auto') {
             if (bin) {
@@ -198,21 +198,18 @@ class CCGenerator {
         const typeConfig = this.cardTypes[selectedType];
         if (!typeConfig) return null;
 
-        if (!bin) {
+        const targetLength = typeConfig.length[0];
+        
+        if (bin && bin.length > 0) {
+            cardNumber = bin.substring(0, Math.min(bin.length, targetLength - 1));
+        } else {
             const randomPrefix = typeConfig.prefix[Math.floor(Math.random() * typeConfig.prefix.length)];
             cardNumber = randomPrefix;
         }
-
-        const targetLength = typeConfig.length[0]; // Use first valid length
         
-        // Ensure we don't exceed target length
+        // Fill remaining digits
         while (cardNumber.length < targetLength - 1) {
             cardNumber += Math.floor(Math.random() * 10);
-        }
-        
-        // Trim if too long
-        if (cardNumber.length > targetLength - 1) {
-            cardNumber = cardNumber.substring(0, targetLength - 1);
         }
 
         const checkDigit = this.calculateLuhnCheckDigit(cardNumber);
