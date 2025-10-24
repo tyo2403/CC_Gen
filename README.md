@@ -8,6 +8,7 @@
     <a href="https://github.com/avipatilpro/CC_Gen/issues"><b>Request Feature</b></a>
   </p>
 </p>
+<br>
 
 - **BIN Support**: Enter custom Bank Identification Numbers (4-16 digits) with auto card type detection
 - **Batch Generation**: Generate 1-100 mathematically valid cards using Luhn algorithm
